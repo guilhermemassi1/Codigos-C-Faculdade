@@ -101,3 +101,100 @@ void imprime_Grafo(Grafo *gr){
     }
 }
 
+int procuraMenorDistancia(float *dist, int *visitado, int NV){
+    int i, menor = -1, primeiro = 1;
+    for(i=0; i < NV; i++){
+        if(dist[i] >= 0 && visitado[i] == 0){
+            if(primeiro){
+                menor = i;
+                primeiro = 0;
+            }else{
+                if(dist[menor] > dist[i])
+                    menor = i;
+            }
+        }
+    }
+    return menor;
+}
+
+void menorCaminho_Grafo(Grafo *gr, int ini, int *ant, float *dist){
+    int i, cont, NV, ind, *visitado, vert;
+    cont = NV = gr->nro_vertices;
+    visitado = (int*) malloc(NV * sizeof(int));
+    for(i=0; i < NV; i++){
+        ant[i] = -1;
+        dist[i] = -1;
+        visitado[i] = 0;
+    }
+    dist[ini] = 0;
+    while(cont > 0){
+        vert = procuraMenorDistancia(dist, visitado, NV);
+        if(vert == -1)
+            break;
+
+        visitado[vert] = 1;
+        cont--;
+        for(i=0; i<gr->grau[vert]; i++){
+            ind = gr->arestas[vert][i];
+            if(dist[ind] < 0){
+               dist[ind] = dist[vert] + 1;
+               ant[ind] = vert;
+            }else{
+                if(dist[ind] > dist[vert] + 1){
+                    dist[ind] = dist[vert] + 1;
+                    ant[ind] = vert;
+                }
+            }
+        }
+    }
+
+    free(visitado);
+}
+
+void buscaProfundidade(Grafo *gr, int ini, int *visitado, int cont){
+    int i;
+    visitado[ini] = cont;
+    for(i=0; i<gr->grau[ini]; i++){
+        if(!visitado[gr->arestas[ini][i]])
+            buscaProfundidade(gr,gr->arestas[ini][i],visitado,cont+1);
+    }
+}
+
+void buscaProfundidade_Grafo(Grafo *gr, int ini, int *visitado){
+    int i, cont = 1;
+    for(i=0; i<gr->nro_vertices; i++)
+        visitado[i] = 0;
+    buscaProfundidade(gr,ini,visitado,cont);
+
+    for(i=0; i < gr->nro_vertices; i++)
+        printf("%d -> %d\n",i,visitado[i]);
+}
+
+void buscaLargura_Grafo(Grafo *gr, int ini, int *visitado){
+    int i, vert, NV, cont = 1;
+    int *fila, IF = 0, FF = 0;
+    for(i=0; i<gr->nro_vertices; i++)
+        visitado[i] = 0;
+
+    NV = gr->nro_vertices;
+    fila = (int*) malloc(NV * sizeof(int));
+    FF++;
+    fila[FF] = ini;
+    visitado[ini] = cont;
+    while(IF != FF){
+        IF = (IF + 1) % NV;
+        vert = fila[IF];
+        cont++;
+        for(i=0; i<gr->grau[vert]; i++){
+            if(!visitado[gr->arestas[vert][i]]){
+                FF = (FF + 1) % NV;
+                fila[FF] = gr->arestas[vert][i];
+                visitado[gr->arestas[vert][i]] = cont;
+            }
+        }
+    }
+    free(fila);
+    for(i=0; i < gr->nro_vertices; i++)
+        printf("%d -> %d\n",i,visitado[i]);
+}
+

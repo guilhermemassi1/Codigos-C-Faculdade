@@ -14,6 +14,16 @@ int main(){
     insereAresta(gr, 4, 1, eh_digrafo, 0);
 
     imprime_Grafo(gr);
+    printf("\nBusca \n");
+    int vis[5];
+    //buscaProfundidade_Grafo(gr, 0, vis);
+    //buscaLargura_Grafo(gr, 0, vis);
+
+    int i,ant[5];
+    float dist[5];
+    menorCaminho_Grafo(gr, 0, ant, dist);
+    for(i=0; i<5; i++)
+        printf("%d: %d -> %f\n",i,ant[i],dist[i]);
 
     libera_Grafo(gr);
 
