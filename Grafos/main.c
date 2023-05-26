@@ -26,7 +26,6 @@ int main(){
         printf("%d: %d -> %f\n",i,ant[i],dist[i]);
 
     libera_Grafo(gr);
-
     system("pause");
     return 0;
 }

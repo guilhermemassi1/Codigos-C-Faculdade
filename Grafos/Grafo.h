@@ -17,4 +17,5 @@ void imprime_Grafo(Grafo *gr);
 void buscaProfundidade_Grafo(Grafo *gr, int ini, int *visitado);
 void buscaLargura_Grafo(Grafo *gr, int ini, int *visitado);
 void menorCaminho_Grafo(Grafo *gr, int ini, int *antecessor, float *distancia);
-
+void algPRIM(Grafo *gr, int orig, int *pai);
+void algKruskal(Grafo *gr, int orig, int *pai);

@@ -198,3 +198,76 @@ void buscaLargura_Grafo(Grafo *gr, int ini, int *visitado){
         printf("%d -> %d\n",i,visitado[i]);
 }
 
+void algPRIM(Grafo *gr, int orig, int *pai){
+    int i, j, dest, primeiro, NV = gr->nro_vertices;
+    double menorPeso;
+    for (i = 0; i < NV; i++)
+        pai[i] = -1;    
+    pai[orig] = orig;
+    while(1){
+        primeiro = 1;
+        for (i = 0; i < NV; i++){
+            if (pai[i] != -1){
+                for (j = 0; j < gr->grau[i]; j++){
+                    if (pai[gr->arestas[i][j]] == 1){
+                        if (primeiro){
+                            menorPeso = gr->pesos[i][j];
+                            orig = i;
+                            dest = gr->arestas[i][j];
+                            primeiro = 0;
+                        }else{
+                            if (menorPeso > gr->pesos[i][j]){
+                                menorPeso = gr->pesos[i][j];
+                                orig = i;
+                                dest = gr->arestas[i][j];
+                            } 
+                        }
+                    }
+                }   
+            }
+        }
+        if (primeiro == 1)
+            break;
+        pai[dest] = orig;
+    }
+}
+
+void algKruskal(Grafo *gr, int orig, int *pai){
+    int i, j, dest, primeiro, NV = gr->nro_vertices;
+    double menorPeso;
+    int *arv = (int*) malloc(NV * sizeof(int));
+    for (i = 0; i < NV; i++){
+        arv[i] = i;
+        pai[i] = -1;
+    }
+    pai[orig] = orig;
+    while (1){
+        primeiro = 1;
+        for (i = 0; i < NV; i++){
+            for ( j = 0; i < gr->grau[i]; j++){
+                if (arv[i] != arv[gr->arestas[i][j]]){
+                    if (primeiro){
+                        menorPeso = gr->pesos[i][j];
+                        orig = i;
+                        dest = gr->arestas[i][j];
+                        primeiro = 0;
+                    }else{
+                        if(menorPeso > gr->pesos[i][j]){
+                            menorPeso = gr->pesos[i][j];
+                            orig = i;
+                            dest = gr->arestas[i][j];
+                        }
+                    }
+                }
+            }
+        }
+        if(primeiro == 1) break;
+        if(pai[orig] == -1) pai[orig] = dest;
+        else pai[dest] = orig;
+        for (i = 0; i < NV; i++){
+            if(arv[i] == arv[dest])
+                arv[i] = arv[orig];       
+        }
+        free(arv);
+    }
+}
